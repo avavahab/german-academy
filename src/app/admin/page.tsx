@@ -83,13 +83,13 @@ export default function AdminPanel() {
     }
   }, []);
 
-  const saveQuestionsToStorage = (updatedQuestions: any) => {
+  const saveQuestionsToStorage = (updatedQuestions: any[]) => {
     setQuestions(updatedQuestions);
     localStorage.setItem("adminQuestionBank", JSON.stringify(updatedQuestions));
 
-    const formattedForPlacement = {};
+    const formattedForPlacement: Record<string, any[]> = {};
     ["A1", "A2", "B1", "B2", "C1", "C2"].forEach(lvl => {
-      const lvlQ = updatedQuestions.filter(q => q.level === lvl).map(q => ({
+      const lvlQ = updatedQuestions.filter((q: any) => q.level === lvl).map((q: any) => ({
         type: q.type || "mcq",
         q: q.question,
         options: q.options || [],
