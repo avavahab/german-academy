@@ -83,7 +83,7 @@ export default function AdminPanel() {
     }
   }, []);
 
-  const saveQuestionsToStorage = (updatedQuestions) => {
+  const saveQuestionsToStorage = (updatedQuestions: any) => {
     setQuestions(updatedQuestions);
     localStorage.setItem("adminQuestionBank", JSON.stringify(updatedQuestions));
 
