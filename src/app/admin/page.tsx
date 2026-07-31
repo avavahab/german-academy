@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 
-// ചോദ്യങ്ങളുടെ ഡാറ്റാ സ്ട്രക്ചറിനായി ഒരു ഇന്റർഫേസ് നിർവ്വചിക്കുന്നു (TypeScript എറർ വരാതിരിക്കാൻ)
 interface Question {
   id: string | number;
   question: string;
   options: string[];
   correctAnswer: string;
-  [key: string]: any; // മറ്റ് പ്രോപ്പർട്ടികൾ ഉണ്ടെങ്കിൽ അനുവദിക്കാൻ
+  [key: string]: any;
 }
 
 export default function AdminPage() {
@@ -17,7 +16,6 @@ export default function AdminPage() {
   const [options, setOptions] = useState(["", "", "", ""]);
   const [correctAnswer, setCorrectAnswer] = useState("");
 
-  // ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു
   useEffect(() => {
     const savedQuestions = localStorage.getItem("adminQuestionBank");
     if (savedQuestions) {
@@ -29,7 +27,6 @@ export default function AdminPage() {
     }
   }, []);
 
-  // ചോദ്യങ്ങൾ സേവ് ചെയ്യാനുള്ള ഫങ്ഷൻ (ഇവിടെയാണ് ടൈപ്പ് നൽകിയിട്ടുള്ളത്)
   const saveQuestionsToStorage = (updatedQuestions: Question[]) => {
     setQuestions(updatedQuestions);
     localStorage.setItem("adminQuestionBank", JSON.stringify(updatedQuestions));
@@ -49,7 +46,6 @@ export default function AdminPage() {
     const updated = [...questions, newObj];
     saveQuestionsToStorage(updated);
 
-    // ഫോം റീസെറ്റ് ചെയ്യുന്നു
     setNewQuestion("");
     setOptions(["", "", "", ""]);
     setCorrectAnswer("");
@@ -67,7 +63,6 @@ export default function AdminPage() {
           Admin Dashboard - Question Bank
         </h1>
 
-        {/* പുതിയ ചോദ്യം ചേർക്കാനുള്ള ഫോം */}
         <form onSubmit={handleAddQuestion} className="bg-gray-800 p-6 rounded-lg shadow-md mb-8">
           <h2 className="text-xl font-semibold mb-4 text-gray-200">പുതിയ ചോദ്യം ചേർക്കുക</h2>
           
@@ -77,7 +72,7 @@ export default function AdminPage() {
               type="text"
               value={newQuestion}
               onChange={(e) => setNewQuestion(e.target.value)}
-              className="w-full p-3 bg-gray-750 border border-gray-700 rounded text-white focus:outline-none focus:border-indigo-500"
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500"
               placeholder="ചോദ്യം ഇവിടെ ടൈപ്പ് ചെയ്യുക..."
               required
             />
@@ -95,7 +90,7 @@ export default function AdminPage() {
                     newOpts[index] = e.target.value;
                     setOptions(newOpts);
                   }}
-                  className="w-full p-2.5 bg-gray-750 border border-gray-700 rounded text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full p-2.5 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500"
                   placeholder={`ഓപ്ഷൻ ${index + 1}`}
                   required
                 />
@@ -109,7 +104,7 @@ export default function AdminPage() {
               type="text"
               value={correctAnswer}
               onChange={(e) => setCorrectAnswer(e.target.value)}
-              className="w-full p-3 bg-gray-750 border border-gray-700 rounded text-white focus:outline-none focus:border-indigo-500"
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white focus:outline-none focus:border-indigo-500"
               placeholder="ശരിയായ ഉത്തരം ഇവിടെ നൽകുക..."
               required
             />
@@ -123,7 +118,6 @@ export default function AdminPage() {
           </button>
         </form>
 
-        {/* നിലവിലുള്ള ചോദ്യങ്ങളുടെ ലിസ്റ്റ് */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4 text-gray-200">ചോദ്യങ്ങളുടെ ലിസ്റ്റ്</h2>
           {questions.length === 0 ? (
@@ -143,7 +137,7 @@ export default function AdminPage() {
                   </div>
                   <button
                     onClick={() => handleDelete(q.id)}
-                    className="bg-red-600 hover:bg-red-700 text-px px-3 py-1 rounded text-sm text-white"
+                    className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm text-white"
                   >
                     ഡിലീറ്റ്
                   </button>
