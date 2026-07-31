@@ -2,8 +2,23 @@
 
 import { useState } from 'react';
 
+interface FormData {
+  fullName: string;
+  email: string;
+  password: string;
+  phone: string;
+  city: string;
+  goal: string;
+  preferredTime: string;
+}
+
+interface Student extends FormData {
+  id: number;
+  registeredAt: string;
+}
+
 export default function StudentRegistration() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     fullName: "",
     email: "",
     password: "", // പാസ്‌വേർഡിനായി പുതിയ ഫീൽഡ്
@@ -16,11 +31,11 @@ export default function StudentRegistration() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (!formData.fullName || !formData.email || !formData.password || !formData.phone) {
@@ -31,17 +46,17 @@ export default function StudentRegistration() {
     setLoading(true);
 
     setTimeout(() => {
-      const existingStudents = JSON.parse(localStorage.getItem("registeredStudents") || "[]");
+      const existingStudents: Student[] = JSON.parse(localStorage.getItem("registeredStudents") || "[]");
       
       // ഇമെയിൽ നേരത്തെ രജിസ്റ്റർ ചെയ്തിട്ടുണ്ടോ എന്ന് പരിശോധിക്കാം
-      const emailExists = existingStudents.some(student => student.email === formData.email);
+      const emailExists = existingStudents.some((student: Student) => student.email === formData.email);
       if (emailExists) {
         alert("ഈ ഇമെയിൽ ഐഡി ഇതിനകം രജിസ്റ്റർ ചെയ്തിട്ടുണ്ട്. ദയവായി ലോഗിൻ ചെയ്യുക!");
         setLoading(false);
         return;
       }
 
-      const newStudent = { 
+      const newStudent: Student = { 
         ...formData, 
         id: Date.now(), 
         registeredAt: new Date().toLocaleDateString() 

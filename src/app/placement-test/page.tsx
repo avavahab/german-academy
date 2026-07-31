@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 
-const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
+type Level = typeof LEVELS[number];
 
-const LEVEL_TITLES = {
+const LEVEL_TITLES: Record<Level, string> = {
   A1: "Beginner",
   A2: "Elementary",
   B1: "Intermediate",
@@ -13,8 +14,17 @@ const LEVEL_TITLES = {
   C2: "Mastery",
 };
 
+interface Question {
+  type?: "mcq" | "text";
+  q: string;
+  options?: string[];
+  answer: string;
+}
+
+type QuestionBank = Record<Level, Question[]>;
+
 // സ്ഥിരമായി നൽകിയിരിക്കുന്ന അടിസ്ഥാന ചോദ്യങ്ങൾ (ഇതിനോടൊപ്പം അഡ്മിൻ ചേർത്തവയും വരും)
-const INITIAL_QUESTION_BANK = {
+const INITIAL_QUESTION_BANK: QuestionBank = {
   A1: [
     { type: "mcq", q: "Wie ______ du?", options: ["heißt", "bist", "hast", "machst"], answer: "heißt" },
     { type: "mcq", q: "\"das Haus\" — which article group does Haus belong to?", options: ["der", "die", "das", "den"], answer: "das" },
@@ -39,18 +49,18 @@ const INITIAL_QUESTION_BANK = {
 const PASS_THRESHOLD = 0.8;
 
 export default function PlacementTest() {
-  const [stage, setStage] = useState("intro");
+  const [stage, setStage] = useState<"intro" | "testing" | "transition" | "result">("intro");
   const [levelIndex, setLevelIndex] = useState(0);
   const [qIndex, setQIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState<string | null>(null);
   const [textInputAnswer, setTextInputAnswer] = useState("");
-  const [levelResults, setLevelResults] = useState({});
-  const [finalLevel, setFinalLevel] = useState(null);
-  const [finalStatus, setFinalStatus] = useState(null);
+  const [levelResults, setLevelResults] = useState<Partial<Record<Level, number>>>({});
+  const [finalLevel, setFinalLevel] = useState<string | null>(null);
+  const [finalStatus, setFinalStatus] = useState<string | null>(null);
   
   // ചോദ്യങ്ങൾ സ്റ്റോർ ചെയ്യാൻ
-  const [questionBank, setQuestionBank] = useState(INITIAL_QUESTION_BANK);
+  const [questionBank, setQuestionBank] = useState<QuestionBank>(INITIAL_QUESTION_BANK);
 
   // അഡ്മിൻ പാനലിൽ നിന്ന് localStorage-ൽ സേവ് ചെയ്ത ചോദ്യങ്ങൾ ലോഡ് ചെയ്യുന്നു
   useEffect(() => {
@@ -61,8 +71,9 @@ export default function PlacementTest() {
         setQuestionBank(prev => {
           const updated = { ...prev };
           Object.keys(parsed).forEach(lvl => {
-            if (parsed[lvl] && parsed[lvl].length > 0) {
-              updated[lvl] = [...(prev[lvl] || []), ...parsed[lvl]];
+            const levelKey = lvl as Level;
+            if (parsed[levelKey] && parsed[levelKey].length > 0) {
+              updated[levelKey] = [...(prev[levelKey] || []), ...parsed[levelKey]];
             }
           });
           return updated;
@@ -73,9 +84,9 @@ export default function PlacementTest() {
     }
   }, []);
 
-  const startAt = (level) => {
+  const startAt = (level: Level) => {
     const idx = LEVELS.indexOf(level);
-    setLevelIndex(idx);
+    setLevelIndex(idx !== -1 ? idx : 0);
     setQIndex(0);
     setCorrectCount(0);
     setSelected(null);
@@ -83,13 +94,13 @@ export default function PlacementTest() {
     setStage("testing");
   };
 
-  const handlePriorKnowledge = (choice) => {
+  const handlePriorKnowledge = (choice: string) => {
     if (choice === "never") {
       setFinalStatus("zero");
       setStage("result");
       return;
     }
-    const map = {
+    const map: Record<string, Level> = {
       some: "A1",
       A1: "A1",
       A2: "A2",
@@ -228,7 +239,7 @@ export default function PlacementTest() {
         {stage === "intro" && (
           <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-8 shadow-lg">
             <h2 className="text-xl font-bold mb-6 text-center">
-              നിങ്ങൾക്ക് മുമ്പ് ജർമൻ പഠിച്ചിട്ടുണ്ടോ?
+              ന നിങ്ങൾക്ക് മുമ്പ് ജർമൻ പഠിച്ചിട്ടുണ്ടോ?
             </h2>
             <div className="grid gap-3">
               {priorOptions.map((opt) => (
@@ -267,7 +278,6 @@ export default function PlacementTest() {
               {currentQuestion.q}
             </h3>
 
-            {/* മൾട്ടിപ്പിൾ ചോയ്സ് ചോദ്യങ്ങൾ ആണെങ്കിൽ ഓപ്ഷനുകൾ കാണിക്കുന്നു */}
             {(!currentQuestion.type || currentQuestion.type === "mcq") && (
               <div className="grid gap-3 mb-8">
                 {currentQuestion.options?.map((opt) => (
@@ -286,7 +296,6 @@ export default function PlacementTest() {
               </div>
             )}
 
-            {/* ടൈപ്പ് ചെയ്യേണ്ട ചോദ്യങ്ങൾ (Text Input) ആണെങ്കിൽ ഇൻപുട്ട് ബോക്സ് കാണിക്കുന്നു */}
             {currentQuestion.type === "text" && (
               <div className="mb-8">
                 <input
@@ -309,7 +318,7 @@ export default function PlacementTest() {
           </div>
         )}
 
-        {/* TRANSITION between passed levels */}
+        {/* TRANSITION */}
         {stage === "transition" && (
           <div className="bg-slate-800/60 border border-amber-400/40 rounded-2xl p-8 shadow-lg text-center">
             <div className="text-4xl mb-4">✓</div>
@@ -351,7 +360,7 @@ export default function PlacementTest() {
                   {levelIndex > 0 ? LEVELS[levelIndex - 1] : "Beginner"} ആണ്.
                 </h2>
                 <p className="text-gray-300 mb-2">
-                  {finalLevel} ടെസ്റ്റിൽ നിങ്ങൾക്ക് {Math.round((levelResults[finalLevel] || 0) * 100)}% സ്കോർ ലഭിച്ചു
+                  {finalLevel} ടെസ്റ്റിൽ നിങ്ങൾക്ക് {Math.round((levelResults[finalLevel as Level] || 0) * 100)}% സ്കോർ ലഭിച്ചു
                   (80% വേണം അടുത്ത ലെവലിലേക്ക് പോകാൻ).
                 </p>
                 <p className="text-gray-300 mb-2">
