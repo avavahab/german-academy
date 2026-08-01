@@ -19,14 +19,17 @@ export default function Home() {
           <div className="hidden md:flex space-x-6 text-gray-300 font-medium items-center">
             <Link href="/" className="hover:text-amber-400 transition">Home</Link>
             <Link href="/placement-test" className="hover:text-amber-400 transition">Placement Test</Link>
-            <Link href="/register" className="text-amber-400 font-semibold hover:underline">Register</Link>
-            <span className="hover:text-amber-400 transition cursor-pointer">Courses</span>
+            <Link href="/courses/a1" className="hover:text-amber-400 transition">Courses</Link>
             <span className="hover:text-amber-400 transition cursor-pointer">AI Tutor</span>
           </div>
 
+          {/* Top Right Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <Link href="/login" className="border border-slate-700 hover:border-amber-400 text-gray-300 hover:text-amber-400 font-bold py-2 px-4 rounded-lg transition text-sm inline-block">
+              Login
+            </Link>
             <Link href="/register" className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 px-5 rounded-lg transition shadow-lg text-sm inline-block">
-              Register Now
+              Register
             </Link>
           </div>
 
@@ -52,12 +55,16 @@ export default function Home() {
           <div className="md:hidden bg-slate-800 border-b border-slate-700 px-6 py-4 space-y-4 sticky top-[73px] z-40">
             <Link href="/" className="block text-gray-300 hover:text-amber-400 transition">Home</Link>
             <Link href="/placement-test" className="block text-gray-300 hover:text-amber-400 transition">Placement Test</Link>
-            <Link href="/register" className="block text-amber-400 font-semibold transition">Register</Link>
-            <span className="block text-gray-300 hover:text-amber-400 transition cursor-pointer">Courses</span>
+            <Link href="/courses/a1" className="block text-gray-300 hover:text-amber-400 transition">Courses</Link>
             <span className="block text-gray-300 hover:text-amber-400 transition cursor-pointer">AI Tutor</span>
-            <Link href="/register" className="block text-center w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 px-4 rounded-lg transition text-sm">
-              Register Now
-            </Link>
+            <div className="flex gap-2 pt-2">
+              <Link href="/login" className="block text-center w-1/2 border border-slate-700 text-gray-300 font-bold py-2 px-4 rounded-lg transition text-sm">
+                Login
+              </Link>
+              <Link href="/register" className="block text-center w-1/2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 px-4 rounded-lg transition text-sm">
+                Register
+              </Link>
+            </div>
           </div>
         )}
 
@@ -73,19 +80,25 @@ export default function Home() {
             Learn German from scratch to mastery (A1 to C2) with smart placement tests, AI personal tutoring, and bilingual support.
           </p>
           
-          {/* Action Buttons including Register */}
+          {/* Main Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link 
               href="/register" 
               className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 px-8 rounded-xl transition shadow-lg text-lg text-center inline-block"
             >
-              Register & Join 🚀
+              Register Now 🚀
+            </Link>
+            <Link 
+              href="/login" 
+              className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold py-3 px-8 rounded-xl transition text-lg text-center inline-block"
+            >
+              Login 🔑
             </Link>
             <Link 
               href="/placement-test" 
               className="border border-slate-700 hover:border-amber-400 text-gray-300 hover:text-amber-400 font-bold py-3 px-8 rounded-xl transition text-lg text-center inline-block"
             >
-              Take Placement Test
+              Take Placement Test 📝
             </Link>
           </div>
         </div>
@@ -96,6 +109,7 @@ export default function Home() {
           <p className="text-gray-400 text-center mb-12">Select your level or let our placement test guide you.</p>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* A1 Level Link Added Here */}
             <Link href="/courses/a1" className="bg-slate-800/60 p-6 rounded-2xl border border-slate-700/80 hover:border-amber-400 transition block group shadow-md">
               <div className="text-amber-400 font-bold text-sm mb-1">Beginner Level</div>
               <h3 className="text-2xl font-bold mb-2 group-hover:text-amber-300 transition">German A1</h3>

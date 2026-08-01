@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
 type Level = typeof LEVELS[number];
@@ -49,6 +50,7 @@ const INITIAL_QUESTION_BANK: QuestionBank = {
 const PASS_THRESHOLD = 0.8;
 
 export default function PlacementTest() {
+  const router = useRouter();
   const [stage, setStage] = useState<"intro" | "testing" | "transition" | "result">("intro");
   const [levelIndex, setLevelIndex] = useState(0);
   const [qIndex, setQIndex] = useState(0);
@@ -61,6 +63,15 @@ export default function PlacementTest() {
   
   // ചോദ്യങ്ങൾ സ്റ്റോർ ചെയ്യാൻ
   const [questionBank, setQuestionBank] = useState<QuestionBank>(INITIAL_QUESTION_BANK);
+
+  // ലോഗിൻ പരിശോധന (Authentication Check)
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (!loggedInUser) {
+      alert("പ്ലേസ്മെന്റ് ടെസ്റ്റ് എഴുതാൻ ദയവായി ആദ്യം ലോഗിൻ ചെയ്യുക!");
+      router.push("/login");
+    }
+  }, [router]);
 
   // അഡ്മിൻ പാനലിൽ നിന്ന് localStorage-ൽ സേവ് ചെയ്ത ചോദ്യങ്ങൾ ലോഡ് ചെയ്യുന്നു
   useEffect(() => {
@@ -239,7 +250,7 @@ export default function PlacementTest() {
         {stage === "intro" && (
           <div className="bg-slate-800/60 border border-slate-700/80 rounded-2xl p-8 shadow-lg">
             <h2 className="text-xl font-bold mb-6 text-center">
-              ന നിങ്ങൾക്ക് മുമ്പ് ജർമൻ പഠിച്ചിട്ടുണ്ടോ?
+              നിങ്ങൾ മുമ്പ് ജർമൻ പഠിച്ചിട്ടുണ്ടോ?
             </h2>
             <div className="grid gap-3">
               {priorOptions.map((opt) => (
