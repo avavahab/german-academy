@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface SubLesson {
@@ -10,12 +10,11 @@ interface SubLesson {
   content: string;
 }
 
-export default function DayLessonPage() {
-  const params = useParams();
+export default function DayLessonPage({ params }: { params: Promise<{ day: string }> }) {
+  const resolvedParams = use(params);
   const router = useRouter();
-  const dayNumber = params?.day ? Number(params.day) : 1;
+  const dayNumber = resolvedParams?.day ? Number(resolvedParams.day) : 1;
 
-  // ഈ ദിവസത്തെ സബ് ലെസനുകൾ (ഡീഫോൾഡായി ചിലത് ഉണ്ടാകും, അഡ്മിന് മാറ്റാം)
   const [subLessons, setSubLessons] = useState<SubLesson[]>([
     { id: 1, title: 'Introduction & Basics', content: 'ഇന്നത്തെ പാഠത്തിന്റെ ആമുഖം.' },
     { id: 2, title: 'Core Concepts', content: 'പ്രധാനപ്പെട്ട ആശയങ്ങൾ.' },
@@ -25,19 +24,16 @@ export default function DayLessonPage() {
   const [currentPart, setCurrentPart] = useState(1);
   const [completedParts, setCompletedParts] = useState<number[]>([]);
   
-  // എക്സാം സ്റ്റേറ്റ്
   const [isExamMode, setIsExamMode] = useState(false);
   const [examSubmitted, setExamSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState('');
   
-  // അഡ്മിൻ എഡിറ്റ് സ്റ്റേറ്റ്
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [newSubTitle, setNewSubTitle] = useState('');
   const [newSubContent, setNewSubContent] = useState('');
 
-  // അഡ്മിൻ പരിശോധന
   useEffect(() => {
     const user = localStorage.getItem('loggedInUser');
     if (user === 'admin' || user?.includes('admin')) {
@@ -45,7 +41,6 @@ export default function DayLessonPage() {
     }
   }, []);
 
-  // ലോക്കൽ സ്റ്റോറേജിൽ നിന്ന് ഈ ദിവസത്തെ സബ് ലെസനുകളും പ്രോഗ്രസ്സും ലോഡ് ചെയ്യാൻ
   useEffect(() => {
     const savedLessons = localStorage.getItem(`day_${dayNumber}_sublessons`);
     if (savedLessons) {
@@ -58,11 +53,14 @@ export default function DayLessonPage() {
 
     const savedProgress = localStorage.getItem(`day_${dayNumber}_progress`);
     if (savedProgress) {
-      setCompletedParts(JSON.parse(savedProgress));
+      try {
+        setCompletedParts(JSON.parse(savedProgress));
+      } catch (e) {
+        console.error(e);
+      }
     }
   }, [dayNumber]);
 
-  // അഡ്മിൻ പുതിയ സബ് ലെസൻ ആഡ് ചെയ്യാൻ
   const handleAddSubLesson = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSubTitle.trim()) return;
@@ -82,7 +80,6 @@ export default function DayLessonPage() {
     alert('പുതിയ സബ് ലെസൻ വിജയകരമായി ചേർത്തു!');
   };
 
-  // ഒരു പാർട്ട് കംപ്ലീറ്റ് ചെയ്യുമ്പോൾ
   const handleCompletePart = (partId: number) => {
     if (!completedParts.includes(partId)) {
       const updated = [...completedParts, partId];
@@ -93,12 +90,10 @@ export default function DayLessonPage() {
     if (currentPart < subLessons.length) {
       setCurrentPart(currentPart + 1);
     } else {
-      // എല്ലാ സബ് ലെസനുകളും കഴിഞ്ഞാൽ എക്സാമിലേക്ക് കടക്കാം
       setIsExamMode(true);
     }
   };
 
-  // എക്സാം ഇവാലുവേഷൻ (95% മാർക്ക് റൂൾ)
   const handleExamSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const isCorrect = selectedAnswer.trim().toLowerCase() === 'guten tag';
@@ -119,7 +114,6 @@ export default function DayLessonPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-white font-sans px-6 py-12 flex flex-col items-center">
       <div className="w-full max-w-4xl">
-        {/* ബാക്ക് ലിങ്ക് */}
         <div className="mb-6 flex justify-between items-center">
           <Link href="/courses/a1" className="text-amber-400 hover:underline text-sm font-semibold">
             ← A1 കോഴ്സ് പേജിലേക്ക് മടങ്ങുക
@@ -131,7 +125,6 @@ export default function DayLessonPage() {
 
         {!isExamMode ? (
           <div className="grid md:grid-cols-3 gap-6">
-            {/* ഇടത് സൈഡിൽ ഈ ദിവസത്തെ സബ് ലെസനുകളുടെ ലിസ്റ്റ് (ലോക്ക് ചെയ്തത്) */}
             <div className="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 space-y-2 h-fit">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-amber-400 font-bold text-sm uppercase tracking-wider">Sub-Lessons</h3>
@@ -146,7 +139,8 @@ export default function DayLessonPage() {
               </div>
 
               {subLessons.map((item, index) => {
-                const isUnlocked = index === 0 || completedParts.includes(subLessons[index - 1].id) || completedParts.includes(item.id);
+                const prevItemUnlocked = index === 0 || completedParts.includes(subLessons[index - 1]?.id);
+                const isUnlocked = prevItemUnlocked || completedParts.includes(item.id);
                 const isDone = completedParts.includes(item.id);
 
                 return (
@@ -171,7 +165,6 @@ export default function DayLessonPage() {
               })}
             </div>
 
-            {/* വലത് വശത്ത് പാഠവും അഡ്മിൻ ഫോമും */}
             <div className="md:col-span-2 bg-slate-800/60 border border-slate-700/80 rounded-2xl p-8 shadow-lg flex flex-col justify-between">
               {!isEditing ? (
                 <div>
@@ -180,7 +173,6 @@ export default function DayLessonPage() {
                   <p className="text-gray-300 leading-relaxed mb-6 whitespace-pre-line">{activeLesson?.content}</p>
                 </div>
               ) : (
-                /* അഡ്മിൻ പുതിയ സബ് ലെസൻ ആഡ് ചെയ്യുന്ന ഫോം */
                 <form onSubmit={handleAddSubLesson} className="space-y-4 mb-6">
                   <h3 className="text-amber-400 font-bold text-sm">🛠️ പുതിയ സബ് ലെസൻ ചേർക്കുക</h3>
                   <div>
@@ -223,7 +215,6 @@ export default function DayLessonPage() {
             </div>
           </div>
         ) : (
-          /* എക്സാം പേജ് (95% മാർക്ക് റൂൾ) */
           <div className="bg-slate-800/80 border border-amber-500/50 rounded-2xl p-8 shadow-lg">
             <div className="text-center mb-6">
               <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-semibold px-3 py-1 rounded-full">

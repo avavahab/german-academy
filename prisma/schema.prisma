@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// യൂസർ ഡാറ്റ സേവ് ചെയ്യാൻ (Student / Admin)
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      String   @default("STUDENT")
+  createdAt DateTime @default(now())
+}
+
+// ജർമൻ ലെവലുകൾ (A1, A2, B1 മുതലായവ)
+model CourseLevel {
+  id          String   @id @default(cuid())
+  level       String   @unique
+  title       String
+  description String?
+  lessons     Lesson[]
+  createdAt   DateTime @default(now())
+}
+
+// അഡ്മിൻ ആഡ് ചെയ്യുന്ന പാഠങ്ങൾ
+model Lesson {
+  id            String      @id @default(cuid())
+  title         String
+  content       String
+  courseLevelId String
+  courseLevel   CourseLevel @relation(fields: [courseLevelId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+}
