@@ -35,3 +35,12 @@ model Lesson {
   courseLevel   CourseLevel @relation(fields: [courseLevelId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())
 }
+
+// പ്ലേസ്മെന്റ് ടെസ്റ്റ് ചോദ്യങ്ങൾ സേവ് ചെയ്യാൻ
+model Question {
+  id            String   @id @default(cuid())
+  question      String
+  options       String[]
+  correctAnswer String
+  createdAt     DateTime @default(now())
+}
