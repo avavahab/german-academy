@@ -33,9 +33,9 @@ async function handleDeleteQuestion(formData: FormData) {
 // 3. കോഴ്സ് ലെസ്സൺ (Lesson / Day content) ആഡ് ചെയ്യാൻ
 async function handleAddLesson(formData: FormData) {
   "use server";
-  const title = formData.get("title") as string; // ഉദാഹരണത്തിന്: "Day 1: Introduction"
-  const content = formData.get("content") as string; // പാഠഭാഗങ്ങൾ
-  const courseLevelId = formData.get("courseLevelId") as string; // A1 ലെവലിന്റെ ID
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const courseLevelId = formData.get("courseLevelId") as string;
 
   if (!title || !content || !courseLevelId) return;
 
@@ -51,8 +51,8 @@ async function handleAddLesson(formData: FormData) {
 }
 
 export default async function AdminPage() {
-  const questions = await db.question.findMany({ orderBy: { createdAt: "desc" } });
-  const courseLevels = await db.courseLevel.findMany({ include: { lessons: true } });
+  const questions: any[] = await db.question.findMany({ orderBy: { createdAt: "desc" } });
+  const courseLevels: any[] = await db.courseLevel.findMany({ include: { lessons: true } });
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
@@ -114,7 +114,7 @@ export default async function AdminPage() {
             <p className="text-gray-400 text-sm">ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>
           ) : (
             <div className="space-y-3">
-              {questions.map((q) => (
+              {questions.map((q: any) => (
                 <div key={q.id} className="p-3 bg-gray-700 rounded flex justify-between items-start">
                   <div>
                     <p className="font-medium text-indigo-300">{q.question}</p>
@@ -145,7 +145,7 @@ export default async function AdminPage() {
                 required
               >
                 <option value="">-- ലെവൽ തിരഞ്ഞെടുക്കുക (ഉദാ: A1) --</option>
-                {courseLevels.map((lvl) => (
+                {courseLevels.map((lvl: any) => (
                   <option key={lvl.id} value={lvl.id}>
                     {lvl.title} ({lvl.level})
                   </option>
@@ -188,12 +188,12 @@ export default async function AdminPage() {
             <p className="text-gray-400 text-sm">കോഴ്സ് ലെവലുകൾ ഒന്നും ഡാറ്റാബേസിൽ ഇല്ല. (ആദ്യം Supabase-ൽ അല്ലെങ്കിൽ Prisma വഴി ഒരു A1 CourseLevel ഉണ്ടെന്ന് ഉറപ്പുവരുത്തുക).</p>
           ) : (
             <div className="space-y-4">
-              {courseLevels.map((lvl) => (
+              {courseLevels.map((lvl: any) => (
                 <div key={lvl.id} className="p-4 bg-gray-700 rounded">
                   <h4 className="font-bold text-indigo-300 text-lg">{lvl.title} ({lvl.level})</h4>
                   <p className="text-xs text-gray-400 mt-1">ആകെ ആഡ് ചെയ്ത പാഠങ്ങൾ: {lvl.lessons.length}</p>
                   <ul className="mt-2 space-y-1">
-                    {lvl.lessons.map((lesson) => (
+                    {lvl.lessons.map((lesson: any) => (
                       <li key={lesson.id} className="text-sm bg-gray-800 p-2 rounded flex justify-between">
                         <span>{lesson.title}</span>
                       </li>
