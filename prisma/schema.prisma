@@ -26,11 +26,13 @@ model CourseLevel {
   createdAt   DateTime @default(now())
 }
 
-// അഡ്മിൻ ആഡ് ചെയ്യുന്ന പാഠങ്ങൾ
+// അഡ്മിൻ ആഡ് ചെയ്യുന്ന പാഠങ്ങൾ (ഇമേജും വീഡിയോയും ഉൾപ്പെടുത്തി അപ്ഡേറ്റ് ചെയ്തത്)
 model Lesson {
   id            String      @id @default(cuid())
   title         String
   content       String
+  imageUrl      String?     // പുതിയത്: ഇമേജ് ലിങ്ക്
+  videoUrl      String?     // പുതിയത്: വീഡിയോ ലിങ്ക്
   courseLevelId String
   courseLevel   CourseLevel @relation(fields: [courseLevelId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())
@@ -41,6 +43,7 @@ model Question {
   id            String   @id @default(cuid())
   question      String
   options       String[]
+  correctString String?  // (ഇത് നിങ്ങളുടെ മുൻകരുതലിനായി മാറ്റിയിട്ടില്ല)
   correctAnswer String
   createdAt     DateTime @default(now())
 }
