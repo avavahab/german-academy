@@ -69,8 +69,8 @@ export default function AdminLessonsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">ഏത് ദിവസത്തെ പാഠമാണ് (Day Selection):</label>
-            <select name="dayTitle" className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" required>
+            <label className="block text-sm font-medium mb-2">ഏത് ദിവസം (Day Selection):</label>
+            <select name="daySelection" className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" required>
               <option value="">-- ദിവസം തിരഞ്ഞെടുക്കുക --</option>
               {daysList.map((day) => (
                 <option key={day} value={day}>{day}</option>
@@ -78,9 +78,43 @@ export default function AdminLessonsPage() {
             </select>
           </div>
 
+          {/* പുതിയത്: ടൈറ്റിൽ നൽകാൻ */}
+          <div>
+            <label className="block text-sm font-medium mb-2">പാഠത്തിന്റെ ടൈറ്റിൽ (Lesson Title):</label>
+            <input 
+              type="text" 
+              name="lessonTitle" 
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" 
+              placeholder="ഉദാ: Introduction to German Alphabet" 
+              required 
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium mb-2">പാഠഭാഗങ്ങൾ / കണ്ടന്റ് (Content):</label>
             <textarea name="content" rows={4} className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" placeholder="വിവരങ്ങൾ ഇവിടെ എഴുതുക..." required />
+          </div>
+
+          {/* പുതിയത്: ഇമേജ് ലിങ്ക് നൽകാൻ */}
+          <div>
+            <label className="block text-sm font-medium mb-2">ഇമേജ് ലിങ്ക് (Image URL - Optional):</label>
+            <input 
+              type="url" 
+              name="imageUrl" 
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" 
+              placeholder="https://example.com/image.jpg" 
+            />
+          </div>
+
+          {/* പുതിയത്: വീഡിയോ ലിങ്ക് നൽകാൻ */}
+          <div>
+            <label className="block text-sm font-medium mb-2">വീഡിയോ ലിങ്ക് (Video URL - Optional):</label>
+            <input 
+              type="url" 
+              name="videoUrl" 
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" 
+              placeholder="https://youtube.com/..." 
+            />
           </div>
 
           <button 
