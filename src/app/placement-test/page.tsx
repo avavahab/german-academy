@@ -24,7 +24,6 @@ interface Question {
 
 type QuestionBank = Record<Level, Question[]>;
 
-// സ്ഥിരമായി നൽകിയിരിക്കുന്ന അടിസ്ഥാന ചോദ്യങ്ങൾ (ഇതിനോടൊപ്പം അഡ്മിൻ ചേർത്തവയും വരും)
 const INITIAL_QUESTION_BANK: QuestionBank = {
   A1: [
     { type: "mcq", q: "Wie ______ du?", options: ["heißt", "bist", "hast", "machst"], answer: "heißt" },
@@ -61,10 +60,8 @@ export default function PlacementTest() {
   const [finalLevel, setFinalLevel] = useState<string | null>(null);
   const [finalStatus, setFinalStatus] = useState<string | null>(null);
   
-  // ചോദ്യങ്ങൾ സ്റ്റോർ ചെയ്യാൻ
   const [questionBank, setQuestionBank] = useState<QuestionBank>(INITIAL_QUESTION_BANK);
 
-  // ലോഗിൻ പരിശോധന (Authentication Check)
   useEffect(() => {
     const loggedInUser = localStorage.getItem("loggedInUser");
     if (!loggedInUser) {
@@ -73,7 +70,6 @@ export default function PlacementTest() {
     }
   }, [router]);
 
-  // അഡ്മിൻ പാനലിൽ നിന്ന് localStorage-ൽ സേവ് ചെയ്ത ചോദ്യങ്ങൾ ലോഡ് ചെയ്യുന്നു
   useEffect(() => {
     const savedQuestions = localStorage.getItem("customQuestionBank");
     if (savedQuestions) {
@@ -185,6 +181,19 @@ export default function PlacementTest() {
     setLevelResults({});
     setFinalLevel(null);
     setFinalStatus(null);
+  };
+
+  // 'Start Learning' ക്ലിക്ക് ചെയ്യുമ്പോൾ ലെവലിന് അനുസരിച്ച് പേജിലേക്ക് പോകുന്ന ഫങ്ഷൻ
+  const handleStartLearning = () => {
+    if (finalStatus === "zero") {
+      router.push("/learn/alphabet"); // Level 0 / Alphabet പേജ്
+    } else if (finalStatus === "passedAll") {
+      router.push("/learn/c2"); // C2 കഴിഞ്ഞവർക്ക്
+    } else if (finalLevel) {
+      router.push(`/learn/${finalLevel.toLowerCase()}`); // A1, A2, B1, B2, C1 ലെവലുകൾക്ക്
+    } else {
+      router.push("/learn/alphabet");
+    }
   };
 
   const priorOptions = [
@@ -409,7 +418,10 @@ export default function PlacementTest() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 px-8 rounded-xl transition">
+              <button 
+                onClick={handleStartLearning}
+                className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 px-8 rounded-xl transition"
+              >
                 Start Learning
               </button>
               <button
