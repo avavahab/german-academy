@@ -6,10 +6,11 @@ import { revalidatePath } from "next/cache";
 export async function addLesson(formData: FormData) {
   const courseLevelCode = formData.get("courseLevel") as string;
   const daySelection = formData.get("daySelection") as string; // ഉദാ: Day 1
-  const lessonTitle = formData.get("lessonTitle") as string;     // ടൈറ്റിൽ (ഉദാ: Basic Grammar)
+  const lessonTitle = formData.get("lessonTitle") as string;      // ടൈറ്റിൽ (ഉദാ: Basic Grammar)
   const content = formData.get("content") as string;
-  const imageUrl = formData.get("imageUrl") as string;           // പുതിയത്
-  const videoUrl = formData.get("videoUrl") as string;           // പുതിയത്
+  const keyPoints = formData.get("keyPoints") as string;          // പുതിയത്: പോയിന്റുകൾ
+  const imageUrl = formData.get("imageUrl") as string;            
+  const videoUrl = formData.get("videoUrl") as string;            
 
   try {
     let levelRecord = await db.courseLevel.findUnique({
@@ -31,7 +32,8 @@ export async function addLesson(formData: FormData) {
     await db.lesson.create({
       data: {
         title: fullTitle,
-        content: content,
+        content: content ? content : null,
+        keyPoints: keyPoints ? keyPoints : null, // പുതിയത്: പോയിന്റുകൾ സേവ് ചെയ്യുന്നു
         imageUrl: imageUrl ? imageUrl : null,
         videoUrl: videoUrl ? videoUrl : null,
         courseLevelId: levelRecord.id,

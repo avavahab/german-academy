@@ -90,9 +90,23 @@ export default function AdminLessonsPage() {
             />
           </div>
 
+          {/* കണ്ടന്റ് (ഇപ്പോൾ required അല്ല, ഓപ്ഷണൽ ആണ്) */}
           <div>
-            <label className="block text-sm font-medium mb-2">പാഠഭാഗങ്ങൾ / കണ്ടന്റ് (Content):</label>
-            <textarea name="content" rows={4} className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" placeholder="വിവരങ്ങൾ ഇവിടെ എഴുതുക..." required />
+            <label className="block text-sm font-medium mb-2">പാഠഭാഗങ്ങൾ / കണ്ടന്റ് (Content - Optional):</label>
+            <textarea name="content" rows={4} className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" placeholder="വിവരങ്ങൾ ഇവിടെ എഴുതുക..." />
+          </div>
+
+          {/* പുതിയത്: പോയിന്റുകൾ നൽകാനുള്ള സെക്ഷൻ (Optional) */}
+          <div>
+            <label className="block text-sm font-medium mb-2">പ്രധാന പോയിന്റുകൾ (Key Points - Optional):</label>
+            <textarea 
+              name="keyPoints" 
+              rows={3} 
+              className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" 
+              placeholder="ഉദാ: 
+- പോയിന്റ് 1
+- പോയിന്റ് 2" 
+            />
           </div>
 
           <div>
