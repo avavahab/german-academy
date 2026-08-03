@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { addLesson } from "./actions";
 
 export default function AdminLessonsPage() {
   const [totalDays, setTotalDays] = useState<number>(60);
   const [message, setMessage] = useState("");
   const [isPending, startTransition] = useTransition();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const courseLevels = [
     { id: "a1", title: "A1 Level", level: "A1" },
@@ -28,7 +29,7 @@ export default function AdminLessonsPage() {
       const result = await addLesson(formData);
       setMessage(result.message);
       if (result.success) {
-        event.currentTarget.reset();
+        formRef.current?.reset();
       }
     });
   }
@@ -44,7 +45,7 @@ export default function AdminLessonsPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">കോഴ്സ് ലെവൽ:</label>
             <select name="courseLevel" className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" required>
@@ -78,7 +79,6 @@ export default function AdminLessonsPage() {
             </select>
           </div>
 
-          {/* പുതിയത്: ടൈറ്റിൽ നൽകാൻ */}
           <div>
             <label className="block text-sm font-medium mb-2">പാഠത്തിന്റെ ടൈറ്റിൽ (Lesson Title):</label>
             <input 
@@ -95,7 +95,6 @@ export default function AdminLessonsPage() {
             <textarea name="content" rows={4} className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" placeholder="വിവരങ്ങൾ ഇവിടെ എഴുതുക..." required />
           </div>
 
-          {/* പുതിയത്: ഇമേജ് ലിങ്ക് നൽകാൻ */}
           <div>
             <label className="block text-sm font-medium mb-2">ഇമേജ് ലിങ്ക് (Image URL - Optional):</label>
             <input 
@@ -106,7 +105,6 @@ export default function AdminLessonsPage() {
             />
           </div>
 
-          {/* പുതിയത്: വീഡിയോ ലിങ്ക് നൽകാൻ */}
           <div>
             <label className="block text-sm font-medium mb-2">വീഡിയോ ലിങ്ക് (Video URL - Optional):</label>
             <input 
