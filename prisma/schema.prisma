@@ -34,6 +34,7 @@ model Lesson {
   keyPoints     String?     // ഓപ്ഷണൽ: പോയിന്റുകൾ മാത്രം നൽകാൻ
   imageUrl      String?     // ഇമേജ് ലിങ്ക്
   videoUrl      String?     // വീഡിയോ ലിങ്ക്
+  dayNumber     Int	@default(1)          // പുതിയത്: ഏത് ദിവസത്തെ പാഠമാണ് എന്ന് അറിയാൻ (ഉദാ: 1, 2, 3...)
   courseLevelId String
   courseLevel   CourseLevel @relation(fields: [courseLevelId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())
