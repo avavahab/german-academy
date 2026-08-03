@@ -183,16 +183,16 @@ export default function PlacementTest() {
     setFinalStatus(null);
   };
 
-  // 'Start Learning' ക്ലിക്ക് ചെയ്യുമ്പോൾ ലെവലിന് അനുസരിച്ച് പേജിലേക്ക് പോകുന്ന ഫങ്ഷൻ
+  // 'Start Learning' ക്ലിക്ക് ചെയ്യുമ്പോൾ ലെവലിന് അനുസരിച്ച് കറക്റ്റ് കോഴ്സ് പേജിലേക്ക് പോകുന്ന ഫങ്ഷൻ
   const handleStartLearning = () => {
     if (finalStatus === "zero") {
-      router.push("/learn/alphabet"); // Level 0 / Alphabet പേജ്
+      router.push("/courses/a1"); // Alphabet-ന് പകരം A1 കോഴ്സ് പേജിലേക്ക് തിരിച്ചുവിടുന്നു
     } else if (finalStatus === "passedAll") {
-      router.push("/learn/c2"); // C2 കഴിഞ്ഞവർക്ക്
+      router.push("/courses/c2"); 
     } else if (finalLevel) {
-      router.push(`/learn/${finalLevel.toLowerCase()}`); // A1, A2, B1, B2, C1 ലെവലുകൾക്ക്
+      router.push(`/courses/${finalLevel.toLowerCase()}`); // /courses/a1, /courses/a2 രീതിയിലേക്ക് മാറ്റുന്നു
     } else {
-      router.push("/learn/alphabet");
+      router.push("/courses/a1");
     }
   };
 
