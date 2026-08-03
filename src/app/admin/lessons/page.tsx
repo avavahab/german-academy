@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { db } from "@/lib/db"; // ഡാറ്റാബേസ് കണക്ഷൻ
-import { revalidatePath } from "next/cache";
+import { useState, useTransition } from "react";
+import { addLesson } from "./actions";
 
 export default function AdminLessonsPage() {
   const [totalDays, setTotalDays] = useState<number>(60);
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const courseLevels = [
     { id: "a1", title: "A1 Level", level: "A1" },
@@ -20,45 +19,18 @@ export default function AdminLessonsPage() {
 
   const daysList = Array.from({ length: totalDays }, (_, i) => `Day ${i + 1}`);
 
-  async function handleAddLesson(formData: FormData) {
-    setLoading(true);
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
     setMessage("");
-
-    const courseLevelCode = formData.get("courseLevel") as string;
-    const dayTitle = formData.get("dayTitle") as string;
-    const content = formData.get("content") as string;
-
-    try {
-      // 1. ഡാറ്റാബേസിൽ ഈ ലെവൽ (ഉദാ: A1) ഉണ്ടോ എന്ന് നോക്കുന്നു, ഇല്ലെങ്കിൽ ഉണ്ടാക്കുന്നു
-      let levelRecord = await db.courseLevel.findUnique({
-        where: { level: courseLevelCode },
-      });
-
-      if (!levelRecord) {
-        levelRecord = await db.courseLevel.create({
-          data: {
-            level: courseLevelCode,
-            title: `${courseLevelCode} Course`,
-          },
-        });
+    startTransition(async () => {
+      const result = await addLesson(formData);
+      setMessage(result.message);
+      if (result.success) {
+        event.currentTarget.reset();
       }
-
-      // 2. ആ ലെവലിലേക്ക് ലെസൺ സേവ് ചെയ്യുന്നു
-      await db.lesson.create({
-        data: {
-          title: dayTitle,
-          content: content,
-          courseLevelId: levelRecord.id,
-        },
-      });
-
-      setMessage("പാഠം വിജയകരമായി സേവ് ചെയ്തു! ✅");
-    } catch (error) {
-      console.error(error);
-      setMessage("സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു. വീണ്ടും ശ്രമിക്കുക. ❌");
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
   return (
@@ -72,7 +44,7 @@ export default function AdminLessonsPage() {
           </div>
         )}
 
-        <form action={handleAddLesson} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">കോഴ്സ് ലെവൽ:</label>
             <select name="courseLevel" className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white" required>
@@ -113,10 +85,10 @@ export default function AdminLessonsPage() {
 
           <button 
             type="submit" 
-            disabled={loading}
+            disabled={isPending}
             className="w-full bg-green-600 hover:bg-green-700 text-white p-3 rounded font-medium transition disabled:opacity-50"
           >
-            {loading ? "സേവ് ചെയ്യുന്നു..." : "പാഠം സേവ് ചെയ്യുക"}
+            {isPending ? "സേവ് ചെയ്യുന്നു..." : "പാഠം സേവ് ചെയ്യുക"}
           </button>
         </form>
       </div>
