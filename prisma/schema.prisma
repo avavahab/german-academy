@@ -4,7 +4,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // യൂസർ ഡാറ്റ സേവ് ചെയ്യാൻ (Master Admin, Admin, Student)
