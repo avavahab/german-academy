@@ -6,18 +6,20 @@ const prisma = new PrismaClient();
 // പാഠം എഡിറ്റ് ചെയ്യാനും അപ്ഡേറ്റ് ചെയ്യാനും
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
-    const { title, content, imageUrl } = await request.json();
+    const { id } = await context.params; // params-നെ await ചെയ്യുക
+    const { title, content, keyPoints, videoUrl, imageUrl } = await request.json();
 
     const updatedLesson = await prisma.lesson.update({
       where: { id },
       data: {
         title,
         content,
-        imageUrl, // പുതിയ ഇമേജ് ലിങ്ക്
+        keyPoints,
+        videoUrl,
+        imageUrl,
       },
     });
 
